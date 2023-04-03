@@ -61,9 +61,7 @@ int led_connections[49][4] = {
   {45, 47, 4, 39},// LED 46
   {46, 48, 5, 40}, // LED 47
   {47, 42, 6, 41},// LED 48   
-    
-   
-    
+        
 };
 
 int j = 0;
@@ -104,6 +102,7 @@ int last_row_position;
 void loop() {
   currentPosition = analogRead(xPin);
   currentPositionY = analogRead(yPin);
+  Serial.println(currentPositionY);
   button = digitalRead(sw);
   row = position / 7 + 1;
   last_row_position = 7 * row - 1;
@@ -212,31 +211,25 @@ void loop() {
   Serial.println(currentPositionY);
   if (currentPositionY != lastPositionY) {
     if (currentPositionY == 1023) {
-
+      // down
       row = position / 7 + 1;
       last_row_position = 7 * row - 1;    
 
-      
-      position = (last_row_position + 1) + (last_row_position - position); 
-      
-
-      // Serial.println(position);
-      // Serial.println(row);
-      // Serial.println(last_row_position);
-      // Serial.println();
+      if (row != 7) {
+        position = (last_row_position + 1) + (last_row_position - position); 
+      } else {
+        position = 6 - (last_row_position - position);        
+      }
     }
     else if (currentPositionY == 0) {
+      //up
       row = position / 7 + 1;
-      last_row_position = 7 * row - 1;    
-
-      
-      position = (last_row_position - 7) - abs((last_row_position - 6) - position); 
-      
-
-      // Serial.println(position);
-      // Serial.println(row);
-      // Serial.println(last_row_position);
-      // Serial.println();
+      last_row_position = 7 * row - 1;
+      if (row != 1) {
+        position = (last_row_position - 7) - abs((last_row_position - 6) - position);
+      } else {
+        position = 48 - (last_row_position - position);
+      }    
     }
    
     position = position % NUM_LEDS;
