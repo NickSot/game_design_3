@@ -69,7 +69,7 @@ int j = 0;
 int k = 0;
 int xPin = A2;
 int yPin = A1;
-int sw = 3;
+int sw = 8;
 int position = 0;
 int button;
 
@@ -85,7 +85,7 @@ int button2;
 void setup() {
   strip.begin();
   strip.show(); // Initialize all pixels to "off"
-  strip.setBrightness(5);
+  strip.setBrightness(25);
   pinMode(sw, INPUT_PULLUP);
   pinMode(sw2, INPUT_PULLUP);
   Serial.begin(9600);
@@ -135,7 +135,6 @@ void loop() {
   currentPositionY = analogRead(yPin);
   currentPosition2 = analogRead(xPin2);
   currentPositionY2 = analogRead(yPin2);
-  //Serial.println(currentPositionY);
   button = digitalRead(sw);
   button2 = digitalRead(sw2);
   row = position / 7 + 1;
@@ -222,38 +221,13 @@ void loop() {
         }
         }
     }
-
-  	
-     for (int i = 0; i < NUM_LEDS; i++) {
-      for (int j = 0; j < NUM_LEDS; j++) {
-        if (i == fixedLED[j]) {
-          found = true;
-        } else if (i == fixedLED2[j]){
-          found2 = true;
-          break;
-        } else {
-          found = false;
-          found2 = false;
-        }
-      }
-      if (!found && !found2) {
-        strip.setPixelColor(i, 0, 0, 0);
-      } else if (found){
-        strip.setPixelColor(i, 255, 0, 0); // color of first player
-    	strip.show();
-      } else if (found2) {
-        strip.setPixelColor(i, 0, 255, 0); // color of second player
-    	strip.show();
-      }
-    }
-    strip.show();
    	// Player 1
     strip.setPixelColor(position, 255, 0, 0);
     strip.show();
     
   }
 
-  Serial.println(currentPositionY);
+  //Serial.println(currentPositionY);
   if (currentPositionY != lastPositionY) {
     if (currentPositionY == 1023) {
       // down
@@ -281,31 +255,6 @@ void loop() {
     if (position < 0) {
      position = NUM_LEDS + position; 
     }
-   
-     for (int i = 0; i < NUM_LEDS; i++) {
-      for (int j = 0; j < NUM_LEDS; j++) {
-        if (i == fixedLED[j]) {
-          found = true;
-        } else if (i == fixedLED2[j]){
-          found2 = true;
-          break;
-        } else {
-          found = false;
-          found2 = false;
-        }
-      }
-      if (!found && !found2) {
-        strip.setPixelColor(i, 0, 0, 0);
-      } else if (found){
-        strip.setPixelColor(i, 255, 0, 0); // color of first player
-    	strip.show();
-      } else if (found2) {
-        strip.setPixelColor(i, 0, 255, 0); // color of second player
-    	strip.show();
-      }
-    }
-    strip.show();
-   	// Player 1
     strip.setPixelColor(position, 255, 0, 0);
     strip.show();
     
@@ -392,39 +341,12 @@ void loop() {
         }
         }
     }
-
-  	
-   for (int i = 0; i < NUM_LEDS; i++) {
-      for (int j = 0; j < NUM_LEDS; j++) {
-        if (i == fixedLED[j]) {
-          found = true;
-        } else if (i == fixedLED2[j]){
-          found2 = true;
-          break;
-        } else {
-          found = false;
-          found2 = false;
-        }
-      }
-      if (!found && !found2) {
-        strip.setPixelColor(i, 0, 0, 0);
-      } else if (found){
-        strip.setPixelColor(i, 255, 0, 0); // color of first player
-    	strip.show();
-      } else if (found2) {
-        strip.setPixelColor(i, 0, 255, 0); // color of second player
-    	strip.show();
-      }
-    }
-    strip.show();
    	
     //Player 2
     strip.setPixelColor(position2, 0, 255, 0);
     strip.show();
   }
 
-
-  //Serial.println(currentPositionY);
   if (currentPositionY2 != lastPositionY2) {
     if (currentPositionY2 == 1023) {
       // down
@@ -452,31 +374,6 @@ void loop() {
     if (position2 < 0) {
      position2 = NUM_LEDS + position2; 
     }
-   
-    for (int i = 0; i < NUM_LEDS; i++) {
-      for (int j = 0; j < NUM_LEDS; j++) {
-        if (i == fixedLED[j]) {
-          found = true;
-        } else if (i == fixedLED2[j]){
-          found2 = true;
-          break;
-        } else {
-          found = false;
-          found2 = false;
-        }
-      }
-      if (!found && !found2) {
-        strip.setPixelColor(i, 0, 0, 0);
-      } else if (found){
-        strip.setPixelColor(i, 255, 0, 0); // color of first player
-    	strip.show();
-      } else if (found2) {
-        strip.setPixelColor(i, 0, 255, 0); // color of second player
-    	strip.show();
-      }
-    }
-    strip.show();
-   	
     //Player 2
     strip.setPixelColor(position2, 0, 255, 0);
     strip.show();
@@ -485,27 +382,26 @@ void loop() {
   if (button == LOW) {
     fixedLED[position] = position;
     if (fixedLED2[position] != 1000) {
-        fixedLED2[position] = position;
+      fixedLED2[position] = 1000;
     }
-    //j++;
     if (position == position2) {
-    pattern(position);
-    for (int i = 0; i < 7; i++) {
-      if (patternLED[i] == position) {
-        strip.setPixelColor(patternLED[i], 128, 128, 0);
-      	strip.show();
-      } else {
-      	strip.setPixelColor(patternLED[i], 0, 0, 255);
-      	strip.show();
+      pattern(position);
+      for (int i = 0; i < 7; i++) {
+        if (patternLED[i] == position) {
+          strip.setPixelColor(patternLED[i], 128, 128, 0);
+          strip.show();
+        } else {
+          strip.setPixelColor(patternLED[i], 0, 0, 255);
+          strip.show();
+        }
       }
-    }
-    delay(1000);
-    for (int i = 0; i < 7; i++) {
-      if (patternLED[i] != position) {
-        strip.setPixelColor(patternLED[i], 0, 0, 0);
-      	strip.show();
-      }
-    }   
+      delay(1000);
+      for (int i = 0; i < 7; i++) {
+        if (patternLED[i] != position) {
+          strip.setPixelColor(patternLED[i], 0, 0, 0);
+          strip.show();
+        }
+      }   
     }  
   }
 
@@ -513,37 +409,32 @@ void loop() {
     // change to second position -player 2
     fixedLED2[position2] = position2;
     if (fixedLED[position2] != 1000) {
-        fixedLED[position2] = position2;
+      fixedLED[position2] = 1000;
     }
-    //k++;
     if (position2 == position) {
-    pattern(position2);
-    for (int i = 0; i < 7; i++) {
-      if (patternLED[i] == position2) {
-      // combine colors here
-        strip.setPixelColor(patternLED[i], 0, 255, 0);
-      	strip.show();
-      } else {
-      	strip.setPixelColor(patternLED[i], 255, 255, 0);
-      	strip.show();
+      pattern(position2);
+      for (int i = 0; i < 7; i++) {
+        if (patternLED[i] == position2) {
+        // combine colors here
+          strip.setPixelColor(patternLED[i], 0, 255, 0);
+          strip.show();
+        } else {
+          strip.setPixelColor(patternLED[i], 255, 255, 0);
+          strip.show();
+        }
       }
-    }
-    delay(1000);
-    for (int i = 0; i < 7; i++) {
-      if (patternLED[i] != position) {
-        strip.setPixelColor(patternLED[i], 0, 0, 0);
-      	strip.show();
+      delay(1000);
+      for (int i = 0; i < 7; i++) {
+        if (patternLED[i] != position) {
+          strip.setPixelColor(patternLED[i], 0, 0, 0);
+          strip.show();
+        }
       }
-    }
-    }  
-    
+    }    
   }
-
-
-  
-  strip.show();
-
-  delay(200);
+  setColor(255, 0, 0, 0, 255, 0);
+  setColor(255, 0, 0, 0, 255, 0);
+  delay(50);
   
   lastPosition = currentPosition;
   lastPositionY = currentPositionY;
@@ -567,7 +458,29 @@ void pattern(int position) {
   }
 }
 
-void movementX(int position, int currentPosition, int lastPosition) {
-
-
+void setColor(int R, int G, int B, int R2, int G2, int B2) {
+  for (int i = 0; i < NUM_LEDS; i++) {
+      for (int j = 0; j < NUM_LEDS; j++) {
+        if (i == fixedLED[j]) {
+          found = true;
+          break;
+        } else if (i == fixedLED2[j]){
+          found2 = true;
+          break;
+        } else {
+          found = false;
+          found2 = false;
+        }
+      }
+      if (!found && !found2) {
+        strip.setPixelColor(i, 0, 0, 0);
+      } else if (found){
+        strip.setPixelColor(i, R, G, B); // color of first player
+    	  strip.show();
+      } else if (found2) {
+        strip.setPixelColor(i, R2, G2, B2); // color of second player
+    	  strip.show();
+      }
+    }
+    strip.show();
 }
