@@ -6,6 +6,7 @@ Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_LEDS, LED_STRIP, NEO_GRB + NEO_K
 
 int fixedLED[49];
 int fixedLED2[49];
+int fixedPattern[49];
 int led_connections[49][4] = {
   {1, 6, 13, 42},  // LED 0
   {0, 2, 12, 43},   // LED 1
@@ -97,6 +98,10 @@ void setup() {
     fixedLED2[x] = 1000;
   }
 
+  for (int x = 0; x < NUM_LEDS; x++) {
+    fixedPattern[x] = 1000;
+  }
+
 }
 
 
@@ -117,6 +122,7 @@ int lastPositionY2 = 0;
 bool found = false;
 // Player 2
 bool found2 = false;
+bool found3 = false;
 
 int numElements;
 int randomLED = 0;
@@ -385,6 +391,12 @@ void loop() {
       fixedLED2[position] = 1000;
     }
     if (position == position2) {
+      fixedPattern[position] = position;
+      if (fixedLED[position] != 1000) {
+        fixedLED[position] = 1000;
+      } else if (fixedLED2[position] != 1000) {
+        fixedLED2[position] = 1000;
+      }
       pattern(position);
       for (int i = 0; i < 7; i++) {
         if (patternLED[i] == position) {
@@ -412,6 +424,12 @@ void loop() {
       fixedLED[position2] = 1000;
     }
     if (position2 == position) {
+      fixedPattern[position2] = position2;
+      if (fixedLED[position2] != 1000) {
+        fixedLED[position2] = 1000;
+      } else if (fixedLED2[position2] != 1000) {
+        fixedLED2[position2] = 1000;
+      }
       pattern(position2);
       for (int i = 0; i < 7; i++) {
         if (patternLED[i] == position2) {
@@ -433,7 +451,8 @@ void loop() {
     }    
   }
   setColor(255, 0, 0, 0, 255, 0);
-  setColor(255, 0, 0, 0, 255, 0);
+  //setColor(255, 0, 0, 0, 255, 0);
+  //strip.show();
   delay(50);
   
   lastPosition = currentPosition;
@@ -467,12 +486,16 @@ void setColor(int R, int G, int B, int R2, int G2, int B2) {
         } else if (i == fixedLED2[j]){
           found2 = true;
           break;
-        } else {
+        } else if (i == fixedPattern[j]){
+          found3 = true;
+          break;
+        }  else {
           found = false;
           found2 = false;
+          found3 = false;
         }
       }
-      if (!found && !found2) {
+      if (!found && !found2 && !found3) {
         strip.setPixelColor(i, 0, 0, 0);
       } else if (found){
         strip.setPixelColor(i, R, G, B); // color of first player
@@ -480,6 +503,8 @@ void setColor(int R, int G, int B, int R2, int G2, int B2) {
       } else if (found2) {
         strip.setPixelColor(i, R2, G2, B2); // color of second player
     	  strip.show();
+      } else if (found3) {
+        strip.setPixelColor(i, (R + R2)/2, (G + G2)/2, (B + B2)/2);
       }
     }
     strip.show();
