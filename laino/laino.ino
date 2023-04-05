@@ -3,7 +3,7 @@
 #define NUM_LEDS 49
 
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_LEDS, LED_STRIP, NEO_GRB + NEO_KHZ800);
-
+unsigned long previousMillis = 0;  // stores the last time the variable was reset
 int fixedLED[49];
 int fixedLED2[49];
 int fixedPattern[49];
@@ -68,10 +68,10 @@ int led_connections[49][4] = {
 
 int j = 0;
 int k = 0;
-int xPin = A2;
-int yPin = A1;
+int xPin = A1;
+int yPin = A2;
 int sw = 8;
-int position = 0;
+int position = 3;
 int button;
 
 
@@ -79,7 +79,7 @@ int button;
 int xPin2 = A3;
 int yPin2 = A4;
 int sw2 = 4;
-int position2 = 7;
+int position2 = 45;
 int button2;
 
 
@@ -137,6 +137,7 @@ int last_row_position2;
 
 
 void loop() {
+  unsigned long currentMillis = millis(); 
   currentPosition = analogRead(xPin);
   currentPositionY = analogRead(yPin);
   currentPosition2 = analogRead(xPin2);
@@ -228,7 +229,7 @@ void loop() {
         }
     }
    	// Player 1
-    strip.setPixelColor(position, 255, 0, 0);
+    strip.setPixelColor(position, 141, 2, 31);
     strip.show();
     
   }
@@ -261,7 +262,7 @@ void loop() {
     if (position < 0) {
      position = NUM_LEDS + position; 
     }
-    strip.setPixelColor(position, 255, 0, 0);
+    strip.setPixelColor(position, 141, 2, 31);
     strip.show();
     
   }
@@ -349,7 +350,7 @@ void loop() {
     }
    	
     //Player 2
-    strip.setPixelColor(position2, 0, 255, 0);
+    strip.setPixelColor(position2, 0, 128, 128);
     strip.show();
   }
 
@@ -381,7 +382,7 @@ void loop() {
      position2 = NUM_LEDS + position2; 
     }
     //Player 2
-    strip.setPixelColor(position2, 0, 255, 0);
+    strip.setPixelColor(position2, 0, 128, 128);
     strip.show();
   }
 
@@ -400,10 +401,10 @@ void loop() {
       pattern(position);
       for (int i = 0; i < 7; i++) {
         if (patternLED[i] == position) {
-          strip.setPixelColor(patternLED[i], 128, 128, 0);
+          strip.setPixelColor(patternLED[i], 141, 2, 31);
           strip.show();
         } else {
-          strip.setPixelColor(patternLED[i], 0, 0, 255);
+          strip.setPixelColor(patternLED[i], 255, 105, 180);
           strip.show();
         }
       }
@@ -434,10 +435,10 @@ void loop() {
       for (int i = 0; i < 7; i++) {
         if (patternLED[i] == position2) {
         // combine colors here
-          strip.setPixelColor(patternLED[i], 0, 255, 0);
+          strip.setPixelColor(patternLED[i], 0, 128, 128);
           strip.show();
         } else {
-          strip.setPixelColor(patternLED[i], 255, 255, 0);
+          strip.setPixelColor(patternLED[i], 120, 81, 169);
           strip.show();
         }
       }
@@ -450,7 +451,7 @@ void loop() {
       }
     }    
   }
-  setColor(255, 0, 0, 0, 255, 0);
+  setColor(141, 2, 31, 0, 128, 128);
   //setColor(255, 0, 0, 0, 255, 0);
   //strip.show();
   delay(50);
@@ -460,6 +461,23 @@ void loop() {
 
   lastPosition2 = currentPosition2;
   lastPositionY2 = currentPositionY2;
+  if (currentMillis - previousMillis >= 60000) { // if 60 seconds have passed
+    previousMillis = currentMillis; // reset the timer
+    position = 3;
+    position2 = 45; // reset the variable
+    for (int x = 0; x < NUM_LEDS; x++) {
+      fixedLED[x] = 1000;
+    }
+
+    for (int x = 0; x < NUM_LEDS; x++) {
+      fixedLED2[x] = 1000;
+    }
+
+    for (int x = 0; x < NUM_LEDS; x++) {
+      fixedPattern[x] = 1000;
+    }
+    
+  }
 }
 
 
